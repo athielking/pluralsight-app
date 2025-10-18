@@ -1,5 +1,3 @@
 # pluralsight-app
 
-this is a new application for pluralsight!
-
-this was added from main.
+This is a test application for pluralsight to demonstrate the role of version control in DevOps and GitOps practices!
