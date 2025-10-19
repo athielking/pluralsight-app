@@ -1,0 +1,75 @@
+name: 'Pluralsight CICD'
+on:
+  workflow_dispatch:
+  push:
+    branches: ['main']
+
+# needed for gcloud authentication
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-container:
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.docker.outputs.image_tag }}
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Set Version Tag"
+        run: echo "version_tag=$(echo ${GITHUB_SHA::7})" >> $GITHUB_OUTPUT
+        id: version_tag
+
+      - name: "Authenticate to Google Cloud"
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          create_credentials_file: true
+          workload_identity_provider: projects/691683364317/locations/global/workloadIdentityPools/github-identity-pool/providers/github-workload-identity-prvdr
+          service_account: github-actions-sa@pluralsight-demos-475513.iam.gserviceaccount.com
+      
+      - name: "Setup gcloud cli"
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          version: '>= 363.0.0'
+      
+      - name: Docker Build and push
+        id: docker
+        run: |
+          gcloud auth configure-docker us-central1-docker.pkg.dev
+
+          export IMAGE_TAG=us-central1-docker.pkg.dev/pluralsight-demos-475513/ps-registry/pluralsight-app:${{ steps.version.outputs.version_tag }}
+          echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+          echo "Building and pushing: $IMAGE_TAG"          
+
+          docker build --tag $IMAGE_TAG .
+          docker push $IMAGE_TAG
+  
+  deploy-container:
+    needs: build-container
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Authenticate to Google Cloud"
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          create_credentials_file: true
+          workload_identity_provider: projects/691683364317/locations/global/workloadIdentityPools/github-identity-pool/providers/github-workload-identity-prvdr
+          service_account: github-actions-sa@pluralsight-demos-475513.iam.gserviceaccount.com
+
+      - name: "Setup gcloud cli"
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          version: '>= 363.0.0'
+
+      - name: Deploy Cloud Run Service
+        run: |
+          gcloud run deploy pluralsight-app \
+            --project pluralsight-demos-475513 \
+            --region us-central1 \
+            --image ${{ needs.build-container.outputs.image_tag }}
+            
