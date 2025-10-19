@@ -20,7 +20,7 @@ jobs:
 
       - name: "Set Version Tag"
         run: echo "version_tag=$(echo ${GITHUB_SHA::7})" >> $GITHUB_OUTPUT
-        id: version_tag
+        id: version
 
       - name: "Authenticate to Google Cloud"
         id: auth
