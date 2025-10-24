@@ -45,4 +45,30 @@ jobs:
 
           docker build --tag $IMAGE_TAG .
           docker push $IMAGE_TAG
+
+  deploy-container:
+    needs: build-container
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Authenticate to Google Cloud"
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          create_credentials_file: true
+          workload_identity_provider: projects/691683364317/locations/global/workloadIdentityPools/github-identity-pool/providers/github-workload-identity-prvdr
+          service_account: github-actions-sa@pluralsight-demos-475513.iam.gserviceaccount.com
+
+      - name: "Setup gcloud cli"
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          version: '>= 363.0.0'
+      
+      - name: "Deploy Cloud Run Service"
+        run: |
+          gcloud run deploy pluralsight-app \
+            --project pluralsight-demos-475513 \
+            --region us-central1 \
+            --image ${{ needs.build-container.outputs.image_tag }}
+      
   
