@@ -14,10 +14,12 @@ spec:
         app: ps-app
     spec:
       containers:
-      - name: ps-app-container
-        image: us-central1-docker.pkg.dev/pluralsight-demos-475513/ps-registry/pluralsight-app:e29a50a
-        ports:
-        - containerPort: 8080
+        - name: ps-app-container
+          image: us-central1-docker.pkg.dev/pluralsight-demos-475513/ps-registry/pluralsight-app:e29a50a
+          ports:
+            - containerPort: 8080
+    containers:
+      - image: $IMAGE_TAG
 ---
 apiVersion: v1
 kind: Service
@@ -31,3 +33,6 @@ spec:
       port: 80
       targetPort: 8080
   type: LoadBalancer
+  template:
+    containers:
+      - image: $IMAGE_TAG
