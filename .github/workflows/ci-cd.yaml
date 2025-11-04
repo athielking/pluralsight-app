@@ -20,8 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: "Install yq"
-        run: apt-get update && apt-get install -y yq
+      - name: Install yq
+        run: sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
 
       - name: "Set Version Tag"
         run: echo "version_tag=$(echo ${GITHUB_SHA::7})" >> $GITHUB_OUTPUT
