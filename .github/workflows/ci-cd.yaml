@@ -57,7 +57,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          sed -i 's|image .*|image: ${{ steps.docker.output.image_tag }}' ps-app.yaml
+          sed -i 's|image .*|image: ${{ steps.docker.output.image_tag }}|' ps-app.yaml
           #yq eval '.spec.template.containers[0].image = $IMAGE_TAG' -i ps-app.yaml
 
           git add ps-app.yaml
