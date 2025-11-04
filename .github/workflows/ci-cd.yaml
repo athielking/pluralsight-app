@@ -3,8 +3,8 @@ on:
   workflow_dispatch:
   push:
     branches: ['main']
-  exclude-paths:
-    - ps-app.yaml
+    exclude-paths:
+      - ps-app.yaml
 
 # needed for gcloud authentication
 permissions:
