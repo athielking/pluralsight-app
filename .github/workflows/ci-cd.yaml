@@ -57,7 +57,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          yq eval '(select(.kind == "Deployment") | .spec.template.spec.containers[0].image) = $IMAGE_TAG' -i ps-app.yaml
+          yq eval 'select(.kind == "Deployment") | .spec.template.spec.containers[0].image = ${{ steps.docker.outputs.image_tag }}' -i ps-app.yaml
 
           git add ps-app.yaml
           git commit -m "updating deployment manifest"
