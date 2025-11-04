@@ -9,7 +9,7 @@ on:
 # needed for gcloud authentication
 permissions:
   id-token: write
-  contents: read
+  contents: write
 
 jobs:
   build-container:
