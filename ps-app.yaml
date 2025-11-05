@@ -1,0 +1,33 @@
+# ps-app.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ps-app-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ps-app
+  template:
+    metadata:
+      labels:
+        app: ps-app
+    spec:
+      containers:
+        - name: ps-app-container
+          image: us-central1-docker.pkg.dev/pluralsight-demos-475513/ps-registry/pluralsight-app:e29a50a
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ps-app-service
+spec:
+  selector:
+    app: ps-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
