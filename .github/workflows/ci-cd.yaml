@@ -3,11 +3,12 @@ on:
   workflow_dispatch:
   push:
     branches: ['main']
-
+    exclude-paths:
+      - ps-app.yaml
 # needed for gcloud authentication
 permissions:
   id-token: write
-  contents: read
+  contents: write
 
 jobs:
   build-container:
@@ -18,6 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install yq
+        run: sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
+      
       - name: "Set Version Tag"
         run: echo "version_tag=$(echo ${GITHUB_SHA::7})" >> $GITHUB_OUTPUT
         id: version
@@ -46,27 +50,40 @@ jobs:
           docker build --tag $IMAGE_TAG .
           docker push $IMAGE_TAG
 
-  deploy-container:
-    needs: build-container
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: "Authenticate to Google Cloud"
-        id: auth
-        uses: google-github-actions/auth@v2
-        with:
-          create_credentials_file: true
-          workload_identity_provider: projects/691683364317/locations/global/workloadIdentityPools/github-identity-pool/providers/github-workload-identity-prvdr
-          service_account: github-actions-sa@pluralsight-demos-475513.iam.gserviceaccount.com
-
-      - name: "Setup gcloud cli"
-        uses: 'google-github-actions/setup-gcloud@v2'
-        with:
-          version: '>= 363.0.0'
-      
-      - name: "Deploy Cloud Run Service"
+      - name: Update Manifest
+        id: update-Manifest
         run: |
-          gcloud run deploy pluralsight-app \
-            --project pluralsight-demos-475513 \
-            --region us-central1 \
-            --image ${{ needs.build-container.outputs.image_tag }}
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          yq eval '(select(.kind == "Deployment") | .spec.template.spec.containers[0].image) = "${{ steps.docker.outputs.image_tag }}"' -i ps-app.yaml
+
+          git add ps-app.yaml
+          git commit -m "updating deployment manifest"
+          git push origin ${{ github.ref }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
