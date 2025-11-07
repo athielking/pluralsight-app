@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: ps-app-container
-          image: us-central1-docker.pkg.dev/pluralsight-demos-475513/ps-registry/pluralsight-app:c558909
+          image: us-central1-docker.pkg.dev/pluralsight-demos-475513/ps-registry/pluralsight-app:6f2204f
           ports:
             - containerPort: 8080
 ---
