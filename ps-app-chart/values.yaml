@@ -1,6 +1,6 @@
 image:
   repository: us-central1-docker.pkg.dev/pluralsight-demos-475513/ps-registry/pluralsight-app
-  tag: a50d763
+  tag: 719b0bf
   pullPolicy: IfNotPresent
 replicaCount: 3
 service:
