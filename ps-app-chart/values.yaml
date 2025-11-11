@@ -1,0 +1,17 @@
+image:
+  repository: us-central1-docker.pkg.dev/pluralsight-demos-475513/ps-registry/pluralsight-app
+  tag: 6f2204f
+  pullPolicy: IfNotPresent
+
+replicaCount: 3
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 8080
+
+redis:
+  enabled: true
+
+postgresql:
+  enabled: true
