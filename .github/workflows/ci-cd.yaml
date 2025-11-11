@@ -55,6 +55,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          cd ps-app-chart
 
           yq eval '.image.tag = "${{ steps.version.outputs.version_tag }}"' -i values.yaml
 
