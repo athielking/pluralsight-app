@@ -1,10 +1,32 @@
-from flask import Flask
+import json
+import base64
+from flask import Flask, request
 
 app = Flask(__name__)
 
-@app.route('/health', methods=['GET'])
-def handle_health():
-    return {"status": "Helm!"}, 200
+@app.route('/', methods=['GET'])
+def handle_hello_world():
+    return {"message": "Hello World!"}, 200
+
+@app.route('/pubsub', methods=['POST'])
+def handle_pubsub_message():
+    envelope = request.get_json()
+
+    if not envelope:
+        return {"error": "no pub/sub message recieved"}, 400
+    
+    if not isinstance(envelope, dict) or "message" not in envelope:
+        return {"error": "invalid pub/sub message"}, 400
+
+    message_data = envelope["message"]
+    if isinstance(message_data, dict) and "data" in message_data:
+        data = base64.b64decode(message_data["data"]).decode("utf-8").strip()
+        envelope["message"]["data"] = data
+
+    print("Recieved PubSub Message")
+    print(json.dumps(envelope, indent=2))
+
+    return "", 204
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=8080, debug=True)
