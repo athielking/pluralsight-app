@@ -1,6 +1,7 @@
 import json
 import base64
 from flask import Flask, request
+from cloudevents.http import from_http
 
 app = Flask(__name__)
 
@@ -28,5 +29,24 @@ def handle_pubsub_message():
 
     return "", 204
 
+@app.route('/eventarc', methods=['POST'])
+def handle_eventarc_message():
+    print("Received EventArc Message")
+    print(json.dumps(request.get_data(), indent=2))
+    
+    return "", 204
+
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=8080, debug=True)
+
+
+
+
+
+
+
+
+
+
+
+
