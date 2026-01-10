@@ -36,6 +36,15 @@ def handle_eventarc_message():
     
     return "", 204
 
+@app.route('/apigee', methods=['GET'])
+def handle_apigee_request():
+    print('Recieved Request from Apigee')
+    print('Request Headers:')
+    print(request.headers)
+
+    return "", 200
+
+
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=8080, debug=True)
 
