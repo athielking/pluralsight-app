@@ -1,0 +1,37 @@
+swagger: '2.0'
+info:
+  title: Cloud Endpoints + Cloud Run
+  description: Sample API on Cloud Endpoints with a Cloud Run backend
+  version: 1.0.0
+host:  endpoint-691683364317.us-central1.run.app
+basePath: "/v1"
+
+schemes:
+  - https
+produces:
+  - application/json
+x-google-backend:
+  address: https://pluralsight-app-691683364317.us-central1.run.app
+  protocol: h2
+
+paths:
+  /cloud-endpoints:
+    get:
+      summary: Greet a user
+      operationId: hello
+      responses:
+        '200':
+          description: A successful response
+          schema:
+            type: object
+            required: 
+              - message
+              - version
+            properties:
+              message:
+                type: string
+                description: The message of the response
+              version:
+                type: number
+                description: The version number of the api
+      
