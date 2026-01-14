@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def handle_hello_world():
-    return {"message": "Hello Python!"}, 200
+    return {"message": "Hello World!"}, 200
 
 @app.route('/pubsub', methods=['POST'])
 def handle_pubsub_message():
@@ -49,7 +49,7 @@ def handle_cev1_request():
 @app.route('/v2/cloud-endpoints', methods=['GET'])
 def handle_cev2_request():
     print('Recieved Request from Cloud Endpoints')
-    return {"message": "Hello Cloud Endpoints!", "version": 2.0}, 200
+    return {"msg": "Hello Cloud Endpoints!", "ver": 2.0}, 200
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=8080, debug=True)
