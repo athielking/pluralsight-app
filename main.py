@@ -1,4 +1,5 @@
 import json
+import os
 import base64
 from flask import Flask, request
 from cloudevents.http import from_http
@@ -7,7 +8,8 @@ app = Flask(__name__)
 
 @app.route('/', methods=['GET'])
 def handle_hello_world():
-    return {"message": "Hello World!"}, 200
+    name = os.getenv("POD_NAME", "Python")
+    return {"message": f"Hello {name}!"}, 200
 
 @app.route('/pubsub', methods=['POST'])
 def handle_pubsub_message():
