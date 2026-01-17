@@ -1,6 +1,6 @@
 import json
-import os
 import base64
+import os
 from flask import Flask, request
 from cloudevents.http import from_http
 
