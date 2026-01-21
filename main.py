@@ -3,8 +3,12 @@ import base64
 import os
 from flask import Flask, request
 from cloudevents.http import from_http
+from health import health_bp
+from load import load_bp
 
 app = Flask(__name__)
+app.register_blueprint(health_bp)
+app.register_blueprint(load_bp)
 
 @app.route('/', methods=['GET'])
 def handle_hello_world():

@@ -1,0 +1,4 @@
+#!/bin/bash
+while true; do
+    curl --parallel --parallel-immediate --parallel-max 24 -X POST "http://34.170.237.21/load?duration=60&intensity=100"
+done
