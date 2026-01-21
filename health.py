@@ -51,7 +51,7 @@ ready = True
 @health_bp.route('/ready', methods=['GET'])
 def handle_readiness():
     pod_name = os.getenv('POD_NAME', 'unknown-pod')
-    print(f'[{pod_name}] Liveness Check - Live: {live}')
+    print(f'[{pod_name}] Readiness Check - Ready: {ready}')
 
     if ready:
         return {'ready': True, 'name': pod_name}, 200
